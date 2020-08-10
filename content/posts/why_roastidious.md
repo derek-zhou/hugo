@@ -21,9 +21,9 @@ Like many blogs out there, this blog is static. More and more bloggers are migra
 There are many excellent static blog generators out there. To name a few:
 
  * [Jekyll](https://jekyllrb.com/)
- * [Hugo](https://gohugo.io/)
  * [Pelican](https://blog.getpelican.com/)
- * [Nikola](https://getnikola.com/), which powers this blog
+ * [Nikola](https://getnikola.com/)
+ * [Hugo](https://gohugo.io/), which powers this blog
 
 However, one feature that bloggers missed in a static blog is an matching commenting system. Yes, you could use social media, but that feels like caving into the evil empires. Or you can use `Disqus!`, but that also has privacy implication, and you have to put up with unknown third-party javascript blob on your site. 
 
