@@ -5,7 +5,7 @@ date: 2020-08-06
 tags:
 - email
 images:
-- pics/postman.png
+- /pics/postman.png
 description: Sending your own email by yourself is suprisingly hard.
 ---
 
@@ -23,7 +23,7 @@ My email sending needs are modest. The free plan from Sendgrid is good enough fo
 
 Sending emails is supposed to be easy: The email server looks up the MX record, figured out which server to contact then just shot the email over. However, my previous tries of sending emails myself have resulted in a lot of bounced emails, or emails landing in the "junk" folder. Why? And why I can't go through by myself while Sendgrid can? Yesterday I sat down and determined to solve the mysteries. Here are what I have figured out.
 
-![postman](pics/postman.png)
+![postman](/pics/postman.png)
 
 ### IPv6 ###
 
