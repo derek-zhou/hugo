@@ -25,7 +25,9 @@ It is undoubtedly more work than the first method. Is there a way that requires 
 
 [Bookmarklet](https://en.wikipedia.org/wiki/Bookmarklet) is a fairly old technology that recently fell out of favor. The idea is to bookmark not Roastidio.us, but a simple javascript snippet that looks into the current location bar and feed that info into Roastidio.us. It looks like this:
 
-[javascript:location.href='https://roastidio.us/roast?url='+encodeURIComponent(window.location.href)](javascript:location.href='https://roastidio.us/roast?url='+encodeURIComponent(window.location.href))
+```javascript
+javascript:location.href='https://roastidio.us/roast?url='+encodeURIComponent(window.location.href)
+```
 
 If you have some basic understanding of javascript, you can easily see what it is trying to do. On a desktop browser, you can right-click the above link and bookmark it and give it a name you can easily remember (such as: Roast it on roastidio.us). Next time you want to roast something, you can invoke this bookmarklet from either your bookmark bar or bookmark menu. Simple. All major versions of browsers still support bookmarklets.
 
