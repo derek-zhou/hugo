@@ -1,4 +1,5 @@
 baseURL = "https://blog.roastidio.us/"
 languageCode = "en-us"
-title = "Roastisdious Blog"
+title = "Roastisdio.us Blog"
 theme = "ananke"
+
