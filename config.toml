@@ -3,3 +3,6 @@ languageCode = "en-us"
 title = "Roastisdio.us Blog"
 theme = "ananke"
 
+[params]
+rss="https://airss.roastidio.us/?subscribe-referrer"
+recent_posts_number = 5
