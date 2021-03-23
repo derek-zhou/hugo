@@ -4,7 +4,7 @@ slug: how_to_write_javascript_like_elixir
 date: 2021-03-22
 tags:
 - web
-description: Javascript has a concurrent programming model that centers around promises, async functions and the await primitive. It is very powerful; however it is also unintuitive, not to mentioned the race conditions it coul introduce into your program. Can I use the conceptually simpler and more robust actor model that is widely used in the Elixir/Erlang world here in Javascript? Let's find out.
+description: Javascript has a concurrent programming model that centers around promises, async functions and the await primitive. However, I want to use the conceptually simpler and more robust actor model that is widely used in the Elixir/Erlang world. Can I do it? Let's find out. 
 ---
 
 I have a confession to make: I love the Elixir/Erlang concurrency model so I am biased. Recently I need to write a Javascript SPA (simgle page application) so I have to deal with the promise based APIs like [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API), [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) and 3rd party Web APIs. They feel awkward and racy to me; I cannot wrap my head arond all the `.then()...` calls and I was afaid that I would be making more bugs than I could fix. I want to use the more familiar and robust [Actor model](https://en.wikipedia.org/wiki/Actor_model), but could I?
@@ -100,11 +100,11 @@ The callback side can also have any number of module local variables as the stat
 
 To use an analogy, the promise chain is like [Russian dolls](https://en.wikipedia.org/wiki/Matryoshka_doll): The client side keep wrapping from the outside, and the call back side will resolve the promises from the inside out. This way, I achieved deterministic execution and infinite message queuing.
 
-From within the callback side, each callback async function do not care what the previous promise is, only to `await` on it until it is resolved before doing anything. The client side can return the promise to the calling client so they can choose to `await` on it. This way, I achieve both the one-way casts and the two-way calls.
+From within the callback side, each callback async function do not care what the previous promise is, only to `await` on it until it is resolved before doing anything. The client side can return the promise to the calling client so they can choose to `await` on it. This way, I achieved both the one-way casts and the two-way calls.
 
 ## Code Organization ##
 
-As decreed by Saša in [To spawn, or not to spawn?](https://www.theerlangelist.com/article/spawn_or_not), processes, such as GenServers, shall only be used to seperate runtime concerns. In the beginning, I only have one GenServer, which looks after all the states. Later on, I splited some parts out to seperate GenServers, not because of business logics concerns, but because certain operations are slow and could benefit from running in a seperate GenServer. As of now I only have 2 additional GenServers:
+As decreed by Saša in [To spawn, or not to spawn?](https://www.theerlangelist.com/article/spawn_or_not), processes, such as GenServers, shall only be used to seperate runtime concerns. In the beginning, I only have one GenServer, which looks after all the states. Later on, I splited some parts out to seperate GenServers, not because of business logic concerns, but because certain operations are slow and could benefit from running in a seperate GenServer. As of now I only have 2 additional GenServers:
 
 * One to fetch network resurces that I need
 * Another one to call a 3rd party web API (Airtable) that I use
