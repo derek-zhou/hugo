@@ -13,6 +13,13 @@ description: Roastidious needs an URL to tell it what the topic is.
 
 The easiest way to invoke Roastidio.us is to click the link embedded on the web page. Roastidio.us uses the [referer header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referer) to figure out where the request to roast is coming from; that's all it needs. The link at the bottom of this blog post is a good example. 
 
+One thing to keep in mind is you have to make sure the referer header is intact. In Firefox 87+ the default of referrer policy is very strict, it will strip off path and query string when crossing origins. So you would need to add the proper `referrerpolicy` attribute in the link:
+
+``` html
+<a href="https://roastidio.us/roast" referrerpolicy="no-referrer-when-downgrade">Roast me at Roastidio.us!</a>
+
+```
+
 The downside is the web page needs to provide the link. If you want to roast a web page that does not offer such a hyperlink, you'll have to do something else.
 
 ## Paste the URL ##
