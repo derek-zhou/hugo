@@ -9,9 +9,9 @@ description: Javascript has a concurrent programming model that centers around p
 
 I have a confession to make: I love the Elixir/Erlang concurrency model so I am biased. Recently I need to write a Javascript SPA (simgle page application) so I have to deal with the promise based APIs like [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API), [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) and 3rd party Web APIs. They feel awkward and racy to me; I cannot wrap my head arond all the `.then()...` calls and I was afaid that I would be making more bugs than I could fix. I want to use the more familiar and robust [Actor model](https://en.wikipedia.org/wiki/Actor_model), but could I?
 
-## The Application Architecture ##
+## The Architecture ##
 
-I break down my Javascript SPA into 3 layers: a frontend layer that handle the presentation layer logic, a backend layer that handles the business logic and a thin middle layer that bridge and decouple the frontend and the backend. The frontend is written in [Svelte](https://svelte.dev/), which I am not going to talk about in this article. The backend is written in vanilla Javascript without using any framework. From the outside, the backend is just a bunch of exported functions so the frontend client can query and manipulate application states. Besides function calls, it will also send async notifications to the frontend. The notification part is easy: In elixir I would use [Phoenix.PubSub](https://hexdocs.pm/phoenix_pubsub/Phoenix.PubSub.html) and in Javascript I can just send a [custom event](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent) to the global `Window` object. 
+I break down my Javascript SPA into 3 layers: a frontend layer that handle the presentation layer logic, a backend layer that handles the business logic and a thin middle layer that bridge and decouple the frontend and the backend. The frontend is written in [Svelte](https://svelte.dev/), which I am not going to talk about in this article. The backend is written in vanilla Javascript without using any framework. From the outside, the backend is just a bunch of exported functions so the frontend client can query and manipulate application states. Besides function calls, it will also send notifications to the frontend. The notification part is easy: In elixir I would use [Phoenix.PubSub](https://hexdocs.pm/phoenix_pubsub/Phoenix.PubSub.html) and in Javascript I can just send a [custom event](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent) to the global `Window` object. 
 
 The backend layer screams [GenServer](https://hexdocs.pm/elixir/GenServer.html#content) to me.
 
@@ -30,21 +30,21 @@ The duty of a GenServer is to look after arbitrary state. Because the call back 
 
 On the surface, Javascript concurrent programming cannot be more different from Erlang:
 
-| Erlang | Javascript |
-|--------|------------|
-| multi-thread | single thread |
-| preemptive scheduling | cooperative yielding |
-| message passing | function calling |
-| message queue | method chainning |
-| immutable values | mutable variables |
+| Language | Elixir/Erlang | Javascript |
+|----------|---------------|------------|
+| threading |  multi-thread | single thread |
+| scheduling | preemptive scheduling | cooperative yielding |
+| communication method | message passing | function calling |
+| Backlogs | message queue | promise chain |
+| Data structure | immutable values | mutable variables |
 
-What we have in Javascript are [async functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function). An async function looks like a regular function but is more like a [coroutine](https://en.wikipedia.org/wiki/Coroutine). When called, it will yield at `await` points, and return a promise. The promise is a handle to the yielded coroutine, which can be `await` -ed in turn to resolve. The re-scheduling of the outstanding coroutines are handled by the runtime automatically; so if one promise deep down is resolved the coroutines `await` -ing on it will become runnable and once resolved can trigger more outter coroutines. Eventually, everything will be resolved and we are back to the boring non-concurrent execution model of regular functions.
+What we have in Javascript are [async functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function). An async function looks like a regular function but is more like a [coroutine](https://en.wikipedia.org/wiki/Coroutine) that can yield and resume execution.  When called, it will yield at each `await` point, and return a promise. The promise is a handle to the in-flight coroutine, and the promises can be `await` -ed in turn. A promise will resolve when the async function run though its course. The re-scheduling of the outstanding coroutines are handled by the runtime automatically; so if one promise deep down is resolved the coroutines `await` -ing on it will become runnable and once resolved can trigger more outter coroutines. Eventually, everything will be resolved and we are back to the boring non-concurrent execution model of regular functions.
 
-The problem is the scheduling of runnable coroutines is uncontrollable and may even be non-deterministic, unless I have a strictly linear promise chain. 
+The problem here is the scheduling of runnable coroutines is uncontrollable and may even be non-deterministic, unless I have a strictly linear promise chain. 
 
 ## The Javascript GenServer ##
 
-In my backend code, I have modules that behave almost like GenServers. Like GenServers, the module has 2 sides: the client side and the callback side.
+In my backend code, I have modules that behave almost like GenServers. Like a GenServer, the module has 2 sides: the client side and the callback side.
 
 ### The client side ###
 
@@ -77,7 +77,7 @@ function getSomethingExt(arg) {
 
 ```
 
-It is very important that the client side function shall not be `async` and shall not `await` anything. All they do is to wrap promises, and optionally return a promise that may or may not be the top most one.
+It is very important that the client side function shall not be `async` and shall not `await` on anything. All they do is to wrap promises, and optionally return a promise that may or may not be the top most one.
 
 ### The callback side ###
 
@@ -89,29 +89,29 @@ async function cb_doSomething(prev, arg) {
 	...
 }
 
-async function getSomething(prev, arg) {
+async function cb_getSomething(prev, arg) {
 	await prev;
 	...
 	return XXX;
 }
 ```
 
-The callback side can also have any number of module local variables as the state. They shall not be exported and has to be accessed by accessors that pass through a client side wrapper and a callback entry barrier. 
+The callback side can also have any number of module local variables as the state. They shall not be exported and has to be accessed by accessors that pass through a client side wrapper and a callback entry barrier. Each callback async function does not care what the previous promise is, only to `await` on it until it is resolved before doing anything so the whole callback side is not reentrant. 
 
 To use an analogy, the promise chain is like [Russian dolls](https://en.wikipedia.org/wiki/Matryoshka_doll): The client side keep wrapping from the outside, and the call back side will resolve the promises from the inside out. This way, I achieved deterministic execution and infinite message queuing.
 
-From within the callback side, each callback async function do not care what the previous promise is, only to `await` on it until it is resolved before doing anything. The client side can return the promise to the calling client so they can choose to `await` on it. This way, I achieved both the one-way casts and the two-way calls.
+The client side can return one promise to the calling client to be `await` -ed on, or nothing at all. This way, I achieved the two-way calls and the one-way casts.
 
 ## Code Organization ##
 
-As decreed by Saša in [To spawn, or not to spawn?](https://www.theerlangelist.com/article/spawn_or_not), processes, such as GenServers, shall only be used to seperate runtime concerns. In the beginning, I only have one GenServer, which looks after all the states. Later on, I splited some parts out to seperate GenServers, not because of business logic concerns, but because certain operations are slow and could benefit from running in a seperate GenServer. As of now I only have 2 additional GenServers:
+As decreed by Saša in [To spawn, or not to spawn?](https://www.theerlangelist.com/article/spawn_or_not), processes, such as GenServers, shall only be used to seperate runtime concerns. In the beginning, I only have one GenServer, which serializes accesses to all the states. Later on, I splited some parts out to seperate GenServers, not because of business logic concerns, but because certain operations are slow and could benefit from running in a seperate GenServer. As of now I only have 2 additional GenServers:
 
 * One to fetch network resurces that I need
 * Another one to call a 3rd party web API (Airtable) that I use
 
 The main GenServer still handles everything else, including the access of all the in-memory data structures and the access to the persistent backing store (IndexedDB). If I ever need to fetch network resources in parallel, or access another 3rd party web API, I would spin up more GenServers. The Javascript SPA is single threaded anyway, so the purpose of the concurency is only to hide latency.
 
-## Final words ##
+## Summary ##
 
 Through clever usage of the async functions and the await primitive, I achieved nearly the same design pattern of the Elixir GenServer. Please keep in mind that there is no process seperation and no supervisor, so if one part crashes, the whole thing crashes. Nevertheless, I believe this is something that can be useful to a broader audience. 
 
