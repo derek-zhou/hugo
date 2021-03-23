@@ -1,5 +1,5 @@
 ---
-title: Tailwind CSS experience
+title: Tailwind CSS Experience
 slug: tailwind_css
 date: 2020-10-03
 tags:
