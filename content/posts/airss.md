@@ -4,7 +4,7 @@ slug: AirSS
 date: 2021-06-22
 tags:
 - roastidious
-description: Roastidio.us lets you leave comments on pretty much anything: blog posts, news articles, podcasts, as long as they are publicly accessible. However, where do you get those interesting links that you want to visit, and possibly roast? You can hunt down hundreds of websites, or you can see what is trending on social networks. The former will waste your time and the latter will blind your sights. There is another way: AirSS.
+description: Roastidio.us lets you leave comments on any  blog posts, news articles, podcasts, as long as they are publicly accessible. However, where do you get those interesting links that you want to visit, and possibly roast? You can hunt down hundreds of websites, or you can see what is trending on social networks. The former will waste your time and the latter will blind your sights. AirSS will help you..
 ---
 
 [Roastidio.us](https://roastidio.us) lets you leave comments on pretty much anything: blog posts, news articles, podcasts, as long as they are publicly accessible. However, where do you get those interesting links that you want to visit, and possibly roast? You can hunt down hundreds of websites, or you can see what is trending on social networks. The former will waste your time and the latter will blind your sights. There is another way: [AirSS](https://airss.roastidio.us).
