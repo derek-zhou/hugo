@@ -4,4 +4,5 @@ title = "Roastisdio.us Blog"
 theme = "ananke"
 
 [params]
+rss="/index.xml"
 recent_posts_number = 5
