@@ -1,5 +1,5 @@
 ---
-title: SPAM blicklisting is out of control
+title: SPAM blacklisting is out of control
 slug: spam_blacklists_are_out_of_control
 date: 2022-02-04
 tags:
@@ -39,7 +39,7 @@ I run my own email server, and don’t use any blacklist. Yes, I got some amount
 
 What is SPAM, but some form of advertisement from poor people, with questionable intentions and potentially harmful content? Now email advertising is a multi billion dollar industry, while SPAM has been demonized over the years. I can’t help to wonder if it has anything to do with the rise of big email vendors, who with no exception are Ads platforms themselves. Your “free” personal email accounts are nothing but an Ads delivery pipeline customized to exploit you. Your paid and hosted corporate email accounts are run by the same big email vendors. How much better can they be? The big email vendors love to enforce onerous rules for SPAM blocking; is it for their users, or for themselves?
 
-The problem of SPAM control boils down to the issue of signal to noise ratio that one can tolerate. More filtering leads to higher signal to noise ratio, with collateral damages such as filtering out some real signals. To me, an intelligent user armed with a good email client, one trash email would only cost me half a second to glimp through. On the other hand, if a legitimate email from a future friend or a potential business associate were accidentally blocked, the lost opportunity cost is several magnitudes higher. From a cost benefit analysis point of view, I cannot justify blacklisting IPs in my email setup; and I don’t think I am alone. 
+The problem of SPAM control boils down to the issue of signal to noise ratio that one can tolerate. More filtering leads to higher signal to noise ratio, with collateral damages such as filtering out some real signals. To me, an intelligent user armed with a [good email client](https://github.com/derek-zhou/liv), one trash email would only cost me half a second to glimp through. On the other hand, if a legitimate email from a future friend or a potential business associate were accidentally blocked, the lost opportunity cost is several magnitudes higher. From a cost benefit analysis point of view, I cannot justify blacklisting IPs in my email setup; and I don’t think I am alone. 
 
 If by any slim chances, you happen to be in charge of an email setup, please, don’t sink to the low of the big email vendors. IP blacklists have their place, however, please don’t use the overarching neighboring blacklists such as UCEPROTECTL2 and UCEPROTECTL3.
 
