@@ -6,3 +6,4 @@ theme = "ananke"
 [params]
 rss="/index.xml"
 recent_posts_number = 5
+title = "Roastisdio.us Blog"
